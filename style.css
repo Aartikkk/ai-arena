@@ -3,9 +3,9 @@
   --card:#121a27;
   --text:#e9eef7;
   --muted:#a9b6cc;
-  --accent:#6aa9ff;
   --border: rgba(255,255,255,.10);
   --shadow: 0 10px 30px rgba(0,0,0,.30);
+  --accent-rgb: 106,169,255;
 }
 
 *{box-sizing:border-box}
@@ -65,7 +65,6 @@ input, select{
 input:focus, select:focus{border-color: rgba(106,169,255,.6)}
 
 .preview{ margin-top:12px; color: var(--muted); font-size:13px; line-height:1.35; }
-
 .hint{color:var(--muted); font-size:13px}
 
 .primary, .ghost{
@@ -76,15 +75,14 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   font-weight:650;
 }
 .primary{
-  background: rgba(106,169,255,.25);
-  border-color: rgba(106,169,255,.45);
+  background: rgba(var(--accent-rgb), .25);
+  border-color: rgba(var(--accent-rgb), .45);
 }
-.primary:hover{background: rgba(106,169,255,.33)}
+.primary:hover{background: rgba(var(--accent-rgb), .33)}
 .ghost{ background: rgba(255,255,255,.04); }
 .ghost:hover{ background: rgba(255,255,255,.07); }
 
 .top-actions{display:flex; gap:10px}
-
 .cta-row{ margin-top:14px; display:flex; gap:10px; }
 .space-between{ justify-content:space-between; }
 
@@ -97,6 +95,15 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   color: var(--muted);
 }
 
+/* Arena polish */
+.arena-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.arena-actions{display:flex; gap:10px; align-items:center;}
+
 .arena-grid{
   margin-top:14px;
   display:grid;
@@ -104,25 +111,6 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   align-items:center;
   gap:10px;
 }
-.status{
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:12px;
-  background: rgba(12,18,28,.55);
-}
-.vs{ text-align:center; color:var(--muted); font-weight:800; letter-spacing:.12em }
-
-/* --- Step 3: Arena polish --- */
-
-.arena-header{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.arena-actions{display:flex; gap:10px; align-items:center;}
-
 .vs-big{
   text-align:center;
   font-weight:900;
@@ -138,14 +126,12 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   background: rgba(12,18,28,.55);
   box-shadow: 0 10px 25px rgba(0,0,0,.22);
 }
-
 .fighter-top{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   gap:10px;
 }
-
 .fighter-name{font-size:18px; font-weight:800;}
 .fighter-ai{color:var(--muted); margin-top:2px; font-size:13px;}
 
@@ -170,7 +156,7 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
 .hpfill{
   height:100%;
   width:100%;
-  background: rgba(106,169,255,.55);
+  background: rgba(var(--accent-rgb), .55);
   transition: width .25s ease;
 }
 
@@ -194,16 +180,84 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   background: rgba(18,26,39,.55);
 }
 
+.badge{
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:6px 10px;
+  background: rgba(255,255,255,.06);
+  color: var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+.roundbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.controls{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.challenge-text{
+  color: rgba(233,238,247,.90);
+  margin: 0;
+}
+
+/* Step 5: Move selection UI */
+.move-grid{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media(max-width:780px){ .arena-grid{grid-template-columns:1fr; } .vs-big{display:none;} .move-grid{grid-template-columns:1fr} }
+
+.move-panel{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px;
+  background: rgba(255,255,255,.03);
+}
+.move-title{
+  font-weight:800;
+  margin-bottom:8px;
+  color: rgba(233,238,247,.9);
+}
+.move-desc{
+  margin-top:8px;
+  color: var(--muted);
+  font-size:13px;
+  line-height:1.35;
+}
+
+/* Console */
 .console{
   margin-top:10px;
   border:1px solid var(--border);
   border-radius:14px;
   background: rgba(8,12,18,.70);
   padding:12px;
+  max-height: 220px;
+  overflow:auto;
 }
 .console-line{
   color: rgba(233,238,247,.85);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 13px;
   line-height: 1.6;
+}
+
+.move-reco{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:800;
+  color: rgba(var(--accent-rgb), .95);
 }
