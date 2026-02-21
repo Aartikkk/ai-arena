@@ -1,29 +1,54 @@
 :root{
-  --bg:#0b0f17;
-  --card:#121a27;
-  --text:#e9eef7;
-  --muted:#a9b6cc;
-  --border: rgba(255,255,255,.10);
-  --shadow: 0 10px 30px rgba(0,0,0,.30);
-  --accent-rgb: 106,169,255;
+  /* Default theme = Cotton Candy */
+  --bg1:#ffe6f2;         /* light pink */
+  --bg2:#e8f1ff;         /* light blue */
+  --card: rgba(255,255,255,.78);
+  --card2: rgba(255,255,255,.62);
+  --text:#171722;
+  --muted:#5a5a70;
+  --border: rgba(25,25,40,.12);
+  --shadow: 0 18px 40px rgba(25,25,40,.10);
+
+  --accent1-rgb: 255, 105, 180; /* hot pink */
+  --accent2-rgb: 102, 178, 255; /* sky blue */
 }
 
-*{box-sizing:border-box}
+html, body{ height:100%; }
+
+*{ box-sizing:border-box; }
+
 body{
   margin:0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1100px 800px at 20% 0%, rgba(106,169,255,.18), transparent 60%),
-              radial-gradient(900px 700px at 90% 20%, rgba(255,255,255,.06), transparent 60%),
-              var(--bg);
-  color:var(--text);
+  color: var(--text);
+  background:
+    radial-gradient(900px 700px at 15% 0%, rgba(var(--accent1-rgb), .18), transparent 60%),
+    radial-gradient(850px 650px at 85% 20%, rgba(var(--accent2-rgb), .18), transparent 60%),
+    linear-gradient(135deg, var(--bg1), var(--bg2));
+}
+
+/* Theme: Sky */
+:root[data-theme="sky"]{
+  --bg1:#eaf6ff;
+  --bg2:#f3f7ff;
+  --accent1-rgb: 94, 163, 255;
+  --accent2-rgb: 129, 199, 255;
+}
+
+/* Theme: Mint */
+:root[data-theme="mint"]{
+  --bg1:#e8fff6;
+  --bg2:#f2fbff;
+  --accent1-rgb: 41, 205, 170;
+  --accent2-rgb: 102, 178, 255;
 }
 
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
   padding:16px 20px;
   border-bottom:1px solid var(--border);
-  background: rgba(11,15,23,.65);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.62);
+  backdrop-filter: blur(14px);
   position: sticky; top:0;
 }
 
@@ -33,11 +58,12 @@ h1{margin:0; font-size:20px}
 .container{max-width:980px; margin:22px auto; padding:0 16px}
 
 .card{
-  background: rgba(18,26,39,.88);
+  background: var(--card);
   border:1px solid var(--border);
   border-radius:18px;
   padding:18px;
   box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
 }
 
 .hidden{display:none}
@@ -49,7 +75,8 @@ h1{margin:0; font-size:20px}
   border:1px solid var(--border);
   border-radius:16px;
   padding:14px;
-  background: rgba(12,18,28,.55);
+  background: var(--card2);
+  backdrop-filter: blur(10px);
 }
 
 label{display:block; color:var(--muted); font-size:12px; margin:10px 0 6px}
@@ -57,12 +84,15 @@ input, select{
   width:100%;
   padding:10px 10px;
   border-radius:12px;
-  border:1px solid var(--border);
-  background: rgba(8,12,18,.70);
+  border:1px solid rgba(25,25,40,.14);
+  background: rgba(255,255,255,.95);
   color: var(--text);
   outline:none;
 }
-input:focus, select:focus{border-color: rgba(106,169,255,.6)}
+input:focus, select:focus{
+  border-color: rgba(var(--accent2-rgb), .55);
+  box-shadow: 0 0 0 4px rgba(var(--accent2-rgb), .14);
+}
 
 .preview{ margin-top:12px; color: var(--muted); font-size:13px; line-height:1.35; }
 .hint{color:var(--muted); font-size:13px}
@@ -75,12 +105,25 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   font-weight:650;
 }
 .primary{
-  background: rgba(var(--accent-rgb), .25);
-  border-color: rgba(var(--accent-rgb), .45);
+  background: linear-gradient(135deg,
+    rgba(var(--accent1-rgb), .18),
+    rgba(var(--accent2-rgb), .18)
+  );
+  border-color: rgba(var(--accent2-rgb), .35);
+  color: var(--text);
 }
-.primary:hover{background: rgba(var(--accent-rgb), .33)}
-.ghost{ background: rgba(255,255,255,.04); }
-.ghost:hover{ background: rgba(255,255,255,.07); }
+.primary:hover{
+  background: linear-gradient(135deg,
+    rgba(var(--accent1-rgb), .24),
+    rgba(var(--accent2-rgb), .24)
+  );
+}
+.ghost{
+  background: rgba(20,20,30,.04);
+}
+.ghost:hover{
+  background: rgba(20,20,30,.07);
+}
 
 .top-actions{display:flex; gap:10px}
 .cta-row{ margin-top:14px; display:flex; gap:10px; }
@@ -123,8 +166,8 @@ input:focus, select:focus{border-color: rgba(106,169,255,.6)}
   border:1px solid var(--border);
   border-radius:18px;
   padding:14px;
-  background: rgba(12,18,28,.55);
-  box-shadow: 0 10px 25px rgba(0,0,0,.22);
+  background: rgba(255,255,255,.82);
+  box-shadow: 0 10px 22px rgba(20,20,40,.08);
 }
 .fighter-top{
   display:flex;
@@ -241,15 +284,15 @@ button:disabled{
 /* Console */
 .console{
   margin-top:10px;
-  border:1px solid var(--border);
+  border:1px solid rgba(25,25,40,.14);
   border-radius:14px;
-  background: rgba(8,12,18,.70);
+  background: rgba(255,255,255,.92);
   padding:12px;
   max-height: 220px;
   overflow:auto;
 }
 .console-line{
-  color: rgba(233,238,247,.85);
+  color: rgba(23,23,34,.90);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 13px;
   line-height: 1.6;
@@ -260,4 +303,168 @@ button:disabled{
   font-size:12px;
   font-weight:800;
   color: rgba(var(--accent-rgb), .95);
+}
+
+/* Round result banner */
+.result{
+  margin-top:12px;
+  border:1px solid rgba(25,25,40,.12);
+  border-radius:14px;
+  padding:10px 12px;
+  background: rgba(255,255,255,.85);
+  font-weight:800;
+}
+.result.hidden{ display:none; }
+
+/* Winner/loser glow */
+.glow-win{
+  box-shadow: 0 0 0 4px rgba(30, 200, 140, .18), var(--shadow);
+  border-color: rgba(30, 200, 140, .35);
+}
+.glow-lose{
+  box-shadow: 0 0 0 4px rgba(255, 90, 120, .16), var(--shadow);
+  border-color: rgba(255, 90, 120, .35);
+}
+
+/* Tiny shake on hit */
+@keyframes hitShake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-3px); }
+  50%{ transform: translateX(3px); }
+  75%{ transform: translateX(-2px); }
+  100%{ transform: translateX(0); }
+}
+.hit{
+  animation: hitShake .22s ease;
+}
+
+/* ===== Pastel Theme Override (paste at very bottom of style.css) ===== */
+:root{
+  --bg1:#ffe8f3;   /* pastel pink */
+  --bg2:#e8f2ff;   /* pastel blue */
+  --text:#1a1a22;
+  --muted:#5f5f73;
+  --border: rgba(30,30,45,.12);
+  --shadow: 0 18px 40px rgba(20,20,40,.10);
+
+  --accent1-rgb: 255, 105, 180; /* pink */
+  --accent2-rgb: 102, 178, 255; /* blue */
+
+  /* surfaces */
+  --surface1: rgba(255,255,255,.78);
+  --surface2: rgba(255,255,255,.62);
+  --surface3: rgba(255,255,255,.88); /* inputs/console */
+}
+
+body{
+  color: var(--text);
+  background:
+    radial-gradient(900px 700px at 15% 0%, rgba(var(--accent1-rgb), .18), transparent 60%),
+    radial-gradient(850px 650px at 85% 20%, rgba(var(--accent2-rgb), .18), transparent 60%),
+    linear-gradient(135deg, var(--bg1), var(--bg2));
+}
+
+/* main surfaces */
+.card{
+  background: var(--surface1);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.panel,
+.fighter,
+.move-panel,
+.card.inner{
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+/* inputs shouldn't be harsh white */
+input, select{
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85));
+  border: 1px solid rgba(30,30,45,.14);
+  color: var(--text);
+}
+input:focus, select:focus{
+  border-color: rgba(var(--accent2-rgb), .55);
+  box-shadow: 0 0 0 4px rgba(var(--accent2-rgb), .14);
+}
+
+/* console shouldn't be bright-white box */
+.console{
+  background: var(--surface3);
+  border: 1px solid rgba(30,30,45,.14);
+}
+.console-line{
+  color: rgba(26,26,34,.90);
+}
+
+/* softer “pill” + badge */
+.pill, .badge{
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(30,30,45,.10);
+  color: var(--muted);
+}
+
+/* hp bar: make it light */
+.hpbar{
+  background: rgba(255,255,255,.55);
+}
+.hpfill{
+  background: linear-gradient(90deg,
+    rgba(var(--accent1-rgb), .55),
+    rgba(var(--accent2-rgb), .55)
+  );
+}
+
+/* primary button: pastel gradient */
+.primary{
+  background: linear-gradient(135deg,
+    rgba(var(--accent1-rgb), .18),
+    rgba(var(--accent2-rgb), .18)
+  );
+  border-color: rgba(var(--accent2-rgb), .35);
+}
+.primary:hover{
+  background: linear-gradient(135deg,
+    rgba(var(--accent1-rgb), .24),
+    rgba(var(--accent2-rgb), .24)
+  );
+}
+
+/* ===== Contrast Fix (paste at bottom) ===== */
+:root{
+  --text:#141421;          /* darker */
+  --muted:#3f3f55;         /* darker muted */
+}
+
+/* General text */
+body{ color: var(--text); }
+
+.hint,
+.preview,
+.move-desc,
+.challenge-text{
+  color: var(--muted) !important;
+  opacity: 1 !important;
+}
+
+/* Make headings strong */
+h2, h3, .move-title, .fighter-name{
+  color: var(--text) !important;
+}
+
+/* Round badge/pills readable */
+.pill, .badge{
+  color: #2b2b3a !important;
+}
+
+/* Console text readable */
+.console-line{
+  color: #1f1f2a !important;
+}
+
+/* Disabled button text still readable */
+button:disabled{
+  opacity: .65;
 }

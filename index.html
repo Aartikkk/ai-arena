@@ -13,6 +13,7 @@
       <p class="subtitle">Offline web game — AI characters are fictional abstractions.</p>
     </div>
     <nav class="top-actions">
+      <button id="btnTheme" class="ghost" title="Change theme">Theme</button>
       <button id="btnHome" class="ghost">Home</button>
       <button id="btnReset" class="ghost">Reset</button>
     </nav>
@@ -84,7 +85,7 @@
 
       <div class="arena-grid">
         <!-- Player 1 Card -->
-        <article class="fighter">
+        <article class="fighter" id="p1Fighter">
           <div class="fighter-top">
             <div>
               <div class="fighter-name" id="p1CardName">Team 1</div>
@@ -103,7 +104,7 @@
         <div class="vs-big">VS</div>
 
         <!-- Player 2 Card -->
-        <article class="fighter">
+        <article class="fighter" id="p2Fighter">
           <div class="fighter-top">
             <div>
               <div class="fighter-name" id="p2CardName">Team 2</div>
@@ -153,6 +154,7 @@
           <button id="btnNextRound" class="ghost" disabled>Next Round</button>
         </div>
 
+        <div id="roundResult" class="result hidden"></div>
         <h3 style="margin:14px 0 8px 0">Combat Log</h3>
         <div class="console" id="console"></div>
       </section>

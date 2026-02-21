@@ -160,6 +160,11 @@ const consoleBox = el("console");
 const p1MoveReco = el("p1MoveReco");
 const p2MoveReco = el("p2MoveReco");
 
+const btnTheme = el("btnTheme");
+const roundResult = el("roundResult");
+const p1Fighter = el("p1Fighter");
+const p2Fighter = el("p2Fighter");
+
 // Helpers
 function logLine(msg){
   const div = document.createElement("div");
@@ -187,16 +192,17 @@ function getAI(id){ return AIs.find(a => a.id === id); }
 function renderStats(containerId, stats){
   const container = el(containerId);
   const entries = [
-    ["CODE", stats.code],
-    ["WRITING", stats.writing],
-    ["RESEARCH", stats.research],
-    ["LOGIC", stats.logic],
-    ["CREATIVITY", stats.creativity],
-    ["SPEED", stats.speed]
+    ["CODE", "💻", stats.code],
+    ["WRITING", "✍️", stats.writing],
+    ["RESEARCH", "🔎", stats.research],
+    ["LOGIC", "🧠", stats.logic],
+    ["CREATIVITY", "🎨", stats.creativity],
+    ["SPEED", "⚡", stats.speed]
   ];
-  container.innerHTML = entries.map(([k,v]) => `
+
+  container.innerHTML = entries.map(([k,icon,v]) => `
     <div class="stat">
-      <div class="k">${k}</div>
+      <div class="k">${icon} ${k}</div>
       <div class="v">${v}</div>
     </div>
   `).join("");
@@ -299,6 +305,26 @@ function recommendedMove(aiId, type){
     }
   }
   return best?.id || null;
+}
+
+const themes = ["cotton", "sky", "mint"];
+
+function applyTheme(name){
+  document.documentElement.dataset.theme = name;
+  localStorage.setItem("ai_arena_theme", name);
+}
+
+function getTheme(){
+  return localStorage.getItem("ai_arena_theme") || "cotton";
+}
+
+if (btnTheme){
+  btnTheme.addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme || "cotton";
+    const i = themes.indexOf(cur);
+    const next = themes[(i + 1) % themes.length];
+    applyTheme(next);
+  });
 }
 
 // Navigation buttons
@@ -408,7 +434,7 @@ btnResolveRound.addEventListener("click", () => {
   logLine(`${match.p1.name} used "${p1Pow.moveName}" | base ${p1Pow.base} + bonus ${p1Pow.bonus} + d6 ${p1Pow.die} + spd ${p1Pow.speedBonus} = ${p1Pow.total} | shield ${p1Pow.shield}`);
   logLine(`${match.p2.name} used "${p2Pow.moveName}" | base ${p2Pow.base} + bonus ${p2Pow.bonus} + d6 ${p2Pow.die} + spd ${p2Pow.speedBonus} = ${p2Pow.total} | shield ${p2Pow.shield}`);
 
-  if (p1Pow.total === p2Pow.total){
+  if (p1Pow.total === p2Pow.total) {
     logLine("Tie — no damage.");
   } else {
     const winner = p1Pow.total > p2Pow.total ? "p1" : "p2";
@@ -426,8 +452,41 @@ btnResolveRound.addEventListener("click", () => {
     setHP(loser, Math.max(0, match[loser].hp), MAX_HP);
   }
 
+  // round banner + highlight
+  if (roundResult) {
+    roundResult.classList.remove("hidden");
+  }
+
+  function clearHighlights() {
+    p1Fighter?.classList.remove("glow-win", "glow-lose", "hit");
+    p2Fighter?.classList.remove("glow-win", "glow-lose", "hit");
+  }
+
+  clearHighlights();
+
+  if (p1Pow.total !== p2Pow.total) {
+    const winnerKey = p1Pow.total > p2Pow.total ? "p1" : "p2";
+    const loserKey  = winnerKey === "p1" ? "p2" : "p1";
+
+    const winEl = winnerKey === "p1" ? p1Fighter : p2Fighter;
+    const loseEl = loserKey === "p1" ? p1Fighter : p2Fighter;
+
+    winEl?.classList.add("glow-win");
+    loseEl?.classList.add("glow-lose", "hit");
+
+    if (roundResult) {
+      roundResult.textContent = `🏆 Round Winner: ${match[winnerKey].name}`;
+    }
+
+    setTimeout(clearHighlights, 600);
+  } else {
+    if (roundResult) {
+      roundResult.textContent = `🤝 Round Result: Tie`;
+    }
+  }
+
   // End checks
-  if (match.p1.hp <= 0 || match.p2.hp <= 0){
+  if (match.p1.hp <= 0 || match.p2.hp <= 0) {
     const champ = match.p1.hp <= 0 ? match.p2.name : match.p1.name;
     logLine(`MATCH END — Winner: ${champ}`);
     btnResolveRound.disabled = true;
@@ -435,7 +494,7 @@ btnResolveRound.addEventListener("click", () => {
     return;
   }
 
-  if (match.round >= MAX_ROUNDS){
+  if (match.round >= MAX_ROUNDS) {
     if (match.p1.hp === match.p2.hp) logLine("MATCH END — Draw!");
     else logLine(`MATCH END — Winner: ${match.p1.hp > match.p2.hp ? match.p1.name : match.p2.name}`);
     btnResolveRound.disabled = true;
@@ -467,4 +526,5 @@ btnResolveRound.disabled = true;
 btnNextRound.disabled = true;
 
 updateRoundUI();
+applyTheme(getTheme());
 show("home");
