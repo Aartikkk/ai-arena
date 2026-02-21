@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Arena</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>AI Arena</h1>
+      <p class="subtitle">Offline web game — AI characters are fictional abstractions.</p>
+    </div>
+    <nav class="top-actions">
+      <button id="btnHome" class="ghost">Home</button>
+      <button id="btnReset" class="ghost">Reset</button>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- SCREEN: HOME -->
+    <section id="screenHome" class="card">
+      <h2>Welcome</h2>
+      <p class="hint">
+        Pick two AI characters, enter the arena, and battle through challenge rounds.
+      </p>
+
+      <div class="cta-row">
+        <button id="btnGoSelect" class="primary">Start</button>
+      </div>
+
+      <div class="note">
+        <strong>Class note:</strong> Stats/powers are designed for gameplay and discussion — not a benchmark of real models.
+      </div>
+    </section>
+
+    <!-- SCREEN: SELECT -->
+    <section id="screenSelect" class="card hidden">
+      <h2>Character Select</h2>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3>Player 1</h3>
+          <label>Name</label>
+          <input id="p1Name" placeholder="Team 1" value="Team 1" />
+
+          <label>Choose AI</label>
+          <select id="p1Select"></select>
+
+          <div id="p1Preview" class="preview"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Player 2</h3>
+          <label>Name</label>
+          <input id="p2Name" placeholder="Team 2" value="Team 2" />
+
+          <label>Choose AI</label>
+          <select id="p2Select"></select>
+
+          <div id="p2Preview" class="preview"></div>
+        </div>
+      </div>
+
+      <div class="cta-row space-between">
+        <button id="btnBackHome" class="ghost">Back</button>
+        <button id="btnStartGame" class="primary">Enter Arena</button>
+      </div>
+    </section>
+
+    <!-- SCREEN: ARENA (placeholder for now) -->
+    <section id="screenArena" class="card hidden">
+      <h2>Arena</h2>
+      <p class="hint">Next step: we’ll add round system + moves + scoreboard.</p>
+
+      <div class="arena-grid">
+        <div class="status" id="p1Status"></div>
+        <div class="vs">VS</div>
+        <div class="status" id="p2Status"></div>
+      </div>
+
+      <div class="cta-row">
+        <button id="btnBackSelect" class="ghost">Change Characters</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
