@@ -74,12 +74,50 @@ el("btnBackSelect").addEventListener("click", () => show("select"));
 el("btnHome").addEventListener("click", () => show("home"));
 el("btnReset").addEventListener("click", () => show("home"));
 
+function renderStats(containerId, stats){
+  const container = el(containerId);
+  const entries = [
+    ["CODE", stats.code],
+    ["WRITING", stats.writing],
+    ["RESEARCH", stats.research],
+    ["LOGIC", stats.logic],
+    ["CREATIVITY", stats.creativity],
+    ["SPEED", stats.speed]
+  ];
+
+  container.innerHTML = entries.map(([k,v]) => `
+    <div class="stat">
+      <div class="k">${k}</div>
+      <div class="v">${v}</div>
+    </div>
+  `).join("");
+}
+
+function setHP(side, hp, maxHp){
+  el(`${side}HPNum`).textContent = hp;
+  const pct = Math.max(0, Math.min(100, (hp / maxHp) * 100));
+  el(`${side}HPFill`).style.width = `${pct}%`;
+}
+
 el("btnStartGame").addEventListener("click", () => {
   const a1 = getAI(p1Select.value);
   const a2 = getAI(p2Select.value);
 
-  p1Status.innerHTML = `<strong>${p1Name.value || "Team 1"}</strong> (${a1.name})`;
-  p2Status.innerHTML = `<strong>${p2Name.value || "Team 2"}</strong> (${a2.name})`;
+  const name1 = p1Name.value || "Team 1";
+  const name2 = p2Name.value || "Team 2";
+
+  // Fill arena cards
+  el("p1CardName").textContent = name1;
+  el("p1CardAI").textContent = a1.name;
+  el("p2CardName").textContent = name2;
+  el("p2CardAI").textContent = a2.name;
+
+  renderStats("p1Stats", a1.stats);
+  renderStats("p2Stats", a2.stats);
+
+  // HP placeholder for now (combat later)
+  setHP("p1", 12, 12);
+  setHP("p2", 12, 12);
 
   show("arena");
 });

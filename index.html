@@ -71,20 +71,66 @@
     </section>
 
     <!-- SCREEN: ARENA (placeholder for now) -->
-    <section id="screenArena" class="card hidden">
+     <section id="screenArena" class="card hidden">
+  <div class="arena-header">
+    <div>
       <h2>Arena</h2>
-      <p class="hint">Next step: we’ll add round system + moves + scoreboard.</p>
+      <p class="hint">Next: we’ll add rounds + moves + battle log.</p>
+    </div>
+    <div class="arena-actions">
+      <button id="btnBackSelect" class="ghost">Change Characters</button>
+    </div>
+  </div>
 
-      <div class="arena-grid">
-        <div class="status" id="p1Status"></div>
-        <div class="vs">VS</div>
-        <div class="status" id="p2Status"></div>
+  <div class="arena-grid">
+    <!-- Player 1 Card -->
+    <article class="fighter" id="p1Card">
+      <div class="fighter-top">
+        <div>
+          <div class="fighter-name" id="p1CardName">Team 1</div>
+          <div class="fighter-ai" id="p1CardAI">ChatGPT</div>
+        </div>
+        <div class="pill">HP <span id="p1HPNum">12</span>/12</div>
       </div>
 
-      <div class="cta-row">
-        <button id="btnBackSelect" class="ghost">Change Characters</button>
+      <div class="hpbar">
+        <div class="hpfill" id="p1HPFill" style="width:100%"></div>
       </div>
-    </section>
+
+      <div class="stats" id="p1Stats"></div>
+    </article>
+
+    <div class="vs-big">VS</div>
+
+    <!-- Player 2 Card -->
+    <article class="fighter" id="p2Card">
+      <div class="fighter-top">
+        <div>
+          <div class="fighter-name" id="p2CardName">Team 2</div>
+          <div class="fighter-ai" id="p2CardAI">Claude</div>
+        </div>
+        <div class="pill">HP <span id="p2HPNum">12</span>/12</div>
+      </div>
+
+      <div class="hpbar">
+        <div class="hpfill" id="p2HPFill" style="width:100%"></div>
+      </div>
+
+      <div class="stats" id="p2Stats"></div>
+    </article>
+  </div>
+
+  <section class="card inner">
+    <h3 style="margin-top:0">Arena Console</h3>
+    <p class="hint" style="margin-top:6px">
+      This is a placeholder. In the next step we’ll generate a Challenge Type and add a “Resolve Round” button.
+    </p>
+    <div class="console">
+      <div class="console-line">> System ready.</div>
+      <div class="console-line">> Players loaded.</div>
+      <div class="console-line">> Waiting for Round 1…</div>
+    </div>
+  </section>
 
   </main>
 
