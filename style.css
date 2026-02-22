@@ -11,10 +11,14 @@
 
   --accent1-rgb: 255, 105, 180; /* hot pink */
   --accent2-rgb: 102, 178, 255; /* sky blue */
+
+  /* pastel surfaces */
+  --surface1: rgba(255,255,255,.78);
+  --surface2: rgba(255,255,255,.62);
+  --surface3: rgba(255,255,255,.88); /* inputs/console */
 }
 
 html, body{ height:100%; }
-
 *{ box-sizing:border-box; }
 
 body{
@@ -168,6 +172,7 @@ input:focus, select:focus{
   padding:14px;
   background: rgba(255,255,255,.82);
   box-shadow: 0 10px 22px rgba(20,20,40,.08);
+  position:relative; /* for floating damage numbers */
 }
 .fighter-top{
   display:flex;
@@ -199,7 +204,10 @@ input:focus, select:focus{
 .hpfill{
   height:100%;
   width:100%;
-  background: rgba(var(--accent-rgb), .55);
+  background: linear-gradient(90deg,
+    rgba(var(--accent1-rgb), .55),
+    rgba(var(--accent2-rgb), .55)
+  );
   transition: width .25s ease;
 }
 
@@ -218,9 +226,11 @@ input:focus, select:focus{
 .stat .k{color:var(--muted); font-size:11px;}
 .stat .v{font-weight:850; font-size:16px; margin-top:2px;}
 
+/* IMPORTANT: inner card stays DARK (do not override it to surface2) */
 .card.inner{
   margin-top:16px;
-  background: rgba(18,26,39,.55);
+  background: rgba(18,26,39,.82);
+  border: 1px solid rgba(255,255,255,.14);
 }
 
 .badge{
@@ -232,6 +242,7 @@ input:focus, select:focus{
   font-size:12px;
   font-weight:800;
 }
+
 .roundbar{
   display:flex;
   justify-content:space-between;
@@ -254,31 +265,42 @@ button:disabled{
   margin: 0;
 }
 
-/* Step 5: Move selection UI */
+/* Move selection UI */
 .move-grid{
   margin-top:12px;
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
 }
-@media(max-width:780px){ .arena-grid{grid-template-columns:1fr; } .vs-big{display:none;} .move-grid{grid-template-columns:1fr} }
+@media(max-width:780px){
+  .arena-grid{grid-template-columns:1fr; }
+  .vs-big{display:none;}
+  .move-grid{grid-template-columns:1fr}
+}
 
 .move-panel{
-  border:1px solid var(--border);
+  border:1px solid rgba(255,255,255,.14);
   border-radius:16px;
   padding:12px;
-  background: rgba(255,255,255,.03);
+  background: rgba(255,255,255,.06);
 }
 .move-title{
   font-weight:800;
   margin-bottom:8px;
-  color: rgba(233,238,247,.9);
+  color: rgba(233,238,247,.95);
 }
 .move-desc{
   margin-top:8px;
-  color: var(--muted);
+  color: rgba(233,238,247,.75);
   font-size:13px;
   line-height:1.35;
+}
+
+.move-reco{
+  margin-top:6px;
+  font-size:12px;
+  font-weight:800;
+  color: rgba(255,255,255,.85);
 }
 
 /* Console */
@@ -298,21 +320,14 @@ button:disabled{
   line-height: 1.6;
 }
 
-.move-reco{
-  margin-top:6px;
-  font-size:12px;
-  font-weight:800;
-  color: rgba(var(--accent-rgb), .95);
-}
-
 /* Round result banner */
 .result{
   margin-top:12px;
   border:1px solid rgba(25,25,40,.12);
   border-radius:14px;
   padding:10px 12px;
-  background: rgba(255,255,255,.85);
-  font-weight:800;
+  background: rgba(255,255,255,.90);
+  font-weight:900;
 }
 .result.hidden{ display:none; }
 
@@ -338,7 +353,7 @@ button:disabled{
   animation: hitShake .22s ease;
 }
 
-/* ===== Pastel Theme Override (paste at very bottom of style.css) ===== */
+/* ===== Pastel Theme Override (keeps pastel OUTSIDE arena inner panel) ===== */
 :root{
   --bg1:#ffe8f3;   /* pastel pink */
   --bg2:#e8f2ff;   /* pastel blue */
@@ -350,10 +365,9 @@ button:disabled{
   --accent1-rgb: 255, 105, 180; /* pink */
   --accent2-rgb: 102, 178, 255; /* blue */
 
-  /* surfaces */
   --surface1: rgba(255,255,255,.78);
   --surface2: rgba(255,255,255,.62);
-  --surface3: rgba(255,255,255,.88); /* inputs/console */
+  --surface3: rgba(255,255,255,.88);
 }
 
 body{
@@ -372,12 +386,11 @@ body{
   backdrop-filter: blur(12px);
 }
 .panel,
-.fighter,
-.move-panel,
-.card.inner{
+.fighter{
   background: var(--surface2);
   border: 1px solid var(--border);
 }
+/* NOTE: intentionally NOT overriding .card.inner here */
 
 /* inputs shouldn't be harsh white */
 input, select{
@@ -399,7 +412,7 @@ input:focus, select:focus{
   color: rgba(26,26,34,.90);
 }
 
-/* softer “pill” + badge */
+/* softer pills/badges outside inner panel */
 .pill, .badge{
   background: rgba(255,255,255,.55);
   border: 1px solid rgba(30,30,45,.10);
@@ -407,15 +420,7 @@ input:focus, select:focus{
 }
 
 /* hp bar: make it light */
-.hpbar{
-  background: rgba(255,255,255,.55);
-}
-.hpfill{
-  background: linear-gradient(90deg,
-    rgba(var(--accent1-rgb), .55),
-    rgba(var(--accent2-rgb), .55)
-  );
-}
+.hpbar{ background: rgba(255,255,255,.55); }
 
 /* primary button: pastel gradient */
 .primary{
@@ -432,31 +437,22 @@ input:focus, select:focus{
   );
 }
 
-/* ===== Contrast Fix (paste at bottom) ===== */
+/* ===== Contrast Fix (general pages) ===== */
 :root{
-  --text:#141421;          /* darker */
-  --muted:#3f3f55;         /* darker muted */
+  --text:#141421;
+  --muted:#3f3f55;
 }
-
-/* General text */
 body{ color: var(--text); }
 
 .hint,
-.preview,
-.move-desc,
-.challenge-text{
+.preview{
   color: var(--muted) !important;
   opacity: 1 !important;
 }
 
-/* Make headings strong */
-h2, h3, .move-title, .fighter-name{
+/* headings default */
+h2, h3{
   color: var(--text) !important;
-}
-
-/* Round badge/pills readable */
-.pill, .badge{
-  color: #2b2b3a !important;
 }
 
 /* Console text readable */
@@ -464,7 +460,882 @@ h2, h3, .move-title, .fighter-name{
   color: #1f1f2a !important;
 }
 
-/* Disabled button text still readable */
-button:disabled{
-  opacity: .65;
+/* Disabled button */
+button:disabled{ opacity: .65; }
+
+/* ===== Arena inner panel: FORCE readable text (fixes your screenshot) ===== */
+.card.inner,
+.card.inner *{
+  opacity: 1 !important;
 }
+
+.card.inner h2,
+.card.inner h3,
+.card.inner .move-title{
+  color: rgba(255,255,255,.95) !important;
+}
+
+.card.inner .hint,
+.card.inner .mini-hint,
+.card.inner .challenge-text,
+.card.inner .move-desc{
+  color: rgba(255,255,255,.78) !important;
+}
+
+.card.inner .pill,
+.card.inner .badge{
+  background: rgba(255,255,255,.10) !important;
+  border-color: rgba(255,255,255,.16) !important;
+  color: rgba(255,255,255,.88) !important;
+}
+
+/* ===== Game Feel / Juice ===== */
+.mini-row{
+  margin-top: 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.toggle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+}
+.toggle input{ transform: scale(1.1); }
+
+.breakdown{
+  margin-top: 10px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 16px;
+  background: rgba(255,255,255,.08);
+  padding: 12px;
+  color: rgba(255,255,255,.92);
+  line-height: 1.45;
+}
+.breakdown .row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.12);
+}
+.breakdown .row:last-child{ border-bottom:none; }
+.breakdown .k{ color: rgba(255,255,255,.72); font-weight:800; }
+.breakdown .v{ color: rgba(255,255,255,.96); font-weight:900; }
+
+.dice-tray{
+  margin-top: 10px;
+  display:flex;
+  gap:12px;
+}
+.die-card{
+  flex:1;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 10px;
+}
+.die-label{
+  color: rgba(255,255,255,.78);
+  font-size: 12px;
+  font-weight: 900;
+}
+.die{
+  margin-top: 8px;
+  height: 56px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 26px;
+  font-weight: 1000;
+  color: rgba(255,255,255,.96);
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.16);
+  letter-spacing: .02em;
+}
+.die.rolling{
+  animation: dieRoll .35s ease-in-out infinite;
+}
+@keyframes dieRoll{
+  0%{ transform: translateY(0) rotate(0deg); }
+  30%{ transform: translateY(-3px) rotate(-2deg); }
+  60%{ transform: translateY(2px) rotate(2deg); }
+  100%{ transform: translateY(0) rotate(0deg); }
+}
+
+/* Floating damage numbers */
+.float{
+  position:absolute;
+  font-weight: 1000;
+  font-size: 18px;
+  pointer-events:none;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  color: rgba(255,255,255,.95);
+  text-shadow: 0 6px 18px rgba(0,0,0,.25);
+  animation: floatUp .65s ease forwards;
+}
+@keyframes floatUp{
+  0%{ opacity:0; transform: translate(-50%, -20%) scale(.95); }
+  15%{ opacity:1; }
+  100%{ opacity:0; transform: translate(-50%, -120%) scale(1.05); }
+}
+
+/* Better button feel */
+.primary:active, .ghost:active{
+  transform: translateY(1px);
+}
+
+/* Small screen shake for whole arena on big hits */
+.shake{
+  animation: arenaShake .18s ease;
+}
+@keyframes arenaShake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-4px); }
+  50%{ transform: translateX(4px); }
+  75%{ transform: translateX(-2px); }
+  100%{ transform: translateX(0); }
+}
+
+/* ===== PASTEL ARENA FIX (paste at VERY bottom) ===== */
+
+/* Make the arena inner panel pastel/light again */
+.card.inner{
+  background: rgba(255,255,255,.72) !important;
+  border: 1px solid rgba(30,30,45,.12) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* Make text inside arena readable (dark text, not white) */
+.card.inner h3,
+.card.inner .move-title{
+  color: var(--text) !important;
+}
+
+.card.inner .challenge-text{
+  color: var(--text) !important;
+}
+
+.card.inner .hint,
+.card.inner .mini-hint,
+.card.inner .move-desc{
+  color: var(--muted) !important;
+}
+
+/* Pills/badges readable on light background */
+.card.inner .pill,
+.card.inner .badge{
+  background: rgba(255,255,255,.70) !important;
+  border-color: rgba(30,30,45,.12) !important;
+  color: #2b2b3a !important;
+}
+
+/* Move panels inside arena should be light too */
+.card.inner .move-panel{
+  background: rgba(255,255,255,.62) !important;
+  border-color: rgba(30,30,45,.12) !important;
+}
+
+/* Breakdown panel readable on light */
+.breakdown{
+  background: rgba(255,255,255,.72) !important;
+  border-color: rgba(30,30,45,.12) !important;
+  color: var(--text) !important;
+}
+.breakdown .k{ color: var(--muted) !important; }
+.breakdown .v{ color: var(--text) !important; }
+
+/* Dice tray readable on light */
+.die-card{
+  background: rgba(255,255,255,.72) !important;
+  border-color: rgba(30,30,45,.12) !important;
+}
+.die-label{ color: var(--muted) !important; }
+.die{
+  background: rgba(255,255,255,.92) !important;
+  border-color: rgba(30,30,45,.12) !important;
+  color: var(--text) !important;
+}
+
+/* Toggle text (Auto-pick) should be dark on light */
+.toggle{ color: var(--text) !important; }
+
+/* ===== Combat Log: Round Cards (paste at bottom) ===== */
+
+.console{
+  background: rgba(255,255,255,.92);
+}
+
+.console details.log-card{
+  border: 1px solid rgba(30,30,45,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.75);
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+
+.console details.log-card summary{
+  cursor: pointer;
+  list-style: none;
+  font-weight: 900;
+  color: #171722;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+}
+
+.console details.log-card summary::-webkit-details-marker{
+  display:none;
+}
+
+.console .log-meta{
+  font-weight: 800;
+  color: rgba(63,63,85,.9);
+  font-size: 12px;
+}
+
+.console .log-body{
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(30,30,45,.14);
+  color: rgba(23,23,34,.92);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.console .pill-mini{
+  display:inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.75);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* ===== Home Hero Upgrade (paste at bottom) ===== */
+
+.home-hero{
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero::before,
+.home-hero::after{
+  content:"";
+  position:absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 999px;
+  filter: blur(30px);
+  opacity: .45;
+  pointer-events:none;
+}
+.home-hero::before{
+  left: -140px;
+  top: -160px;
+  background: rgba(var(--accent1-rgb), .35);
+  animation: floaty 8s ease-in-out infinite;
+}
+.home-hero::after{
+  right: -160px;
+  bottom: -180px;
+  background: rgba(var(--accent2-rgb), .35);
+  animation: floaty 9s ease-in-out infinite reverse;
+}
+
+@keyframes floaty{
+  0%{ transform: translate(0,0); }
+  50%{ transform: translate(24px, 18px); }
+  100%{ transform: translate(0,0); }
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media(max-width: 860px){
+  .hero-grid{ grid-template-columns: 1fr; }
+}
+
+.hero-kicker{
+  display:inline-block;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(63,63,85,.85);
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(30,30,45,.12);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.hero-title{
+  margin: 14px 0 8px;
+  font-size: 38px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.hero-gradient{
+  background: linear-gradient(90deg, rgba(var(--accent1-rgb),.95), rgba(var(--accent2-rgb),.95));
+  -webkit-background-clip: text;
+  background-clip:text;
+  color: transparent;
+}
+
+.hero-sub{
+  margin: 0;
+  font-size: 15px;
+  color: rgba(63,63,85,.92);
+  max-width: 56ch;
+}
+
+.chip-row{
+  margin-top: 14px;
+  display:flex;
+  flex-wrap:wrap;
+  gap: 8px;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.62);
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(43,43,58,.92);
+}
+
+.primary.big{
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+
+.mini-note{
+  margin-top: 10px;
+  color: rgba(63,63,85,.80);
+  font-size: 13px;
+}
+
+.preview-card{
+  border-radius: 18px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.70);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  transform: translateY(0);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.preview-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 22px 48px rgba(20,20,40,.14);
+}
+
+.preview-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap: 10px;
+}
+
+.versus-mini{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.mini-fighter{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  padding: 8px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.62);
+}
+
+.avatar{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 1000;
+  color: rgba(20,20,35,.95);
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.70);
+}
+.avatar.a1{
+  background: linear-gradient(135deg, rgba(var(--accent1-rgb),.35), rgba(255,255,255,.55));
+}
+.avatar.a2{
+  background: linear-gradient(135deg, rgba(var(--accent2-rgb),.35), rgba(255,255,255,.55));
+}
+
+.mf-name{ font-weight: 1000; }
+.mf-sub{ font-size: 12px; color: rgba(63,63,85,.82); margin-top: 2px; }
+
+.vs-badge{
+  font-weight: 1000;
+  letter-spacing: .18em;
+  color: rgba(63,63,85,.75);
+}
+
+.type-pill{
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.62);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 1000;
+  font-size: 12px;
+  color: rgba(43,43,58,.92);
+}
+
+.preview-prompt{
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(30,30,45,.16);
+  background: rgba(255,255,255,.58);
+  color: rgba(23,23,34,.92);
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.preview-rules{
+  margin-top: 10px;
+  display:grid;
+  gap: 8px;
+}
+
+.rule{
+  display:flex;
+  justify-content:space-between;
+  gap: 10px;
+  border: 1px solid rgba(30,30,45,.10);
+  background: rgba(255,255,255,.60);
+  border-radius: 14px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.rule-k{ font-weight: 1000; color: rgba(43,43,58,.92); }
+.rule-v{ font-weight: 850; color: rgba(63,63,85,.92); }
+
+.preview-footer{
+  margin-top: 10px;
+  color: rgba(63,63,85,.78);
+  font-size: 12px;
+  border-top: 1px solid rgba(30,30,45,.10);
+  padding-top: 10px;
+}
+.spark{ margin-right: 6px; }
+
+.howto{
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(30,30,45,.10);
+}
+
+.howto-title{
+  margin: 0 0 10px 0;
+}
+
+.steps{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media(max-width: 860px){
+  .steps{ grid-template-columns: 1fr 1fr; }
+}
+@media(max-width: 520px){
+  .steps{ grid-template-columns: 1fr; }
+}
+
+.step{
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.62);
+  border-radius: 16px;
+  padding: 12px;
+  display:flex;
+  gap: 10px;
+  align-items:flex-start;
+}
+.step-num{
+  width: 28px;
+  height: 28px;
+  border-radius: 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 1000;
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(30,30,45,.12);
+}
+.step-title{
+  font-weight: 1000;
+}
+.step-text{
+  margin-top: 3px;
+  font-size: 13px;
+  color: rgba(63,63,85,.86);
+}
+
+/* ===== HOME: Make it feel like a game lobby (paste at very bottom) ===== */
+
+/* Portal behind the preview card */
+.hero-right{
+  position: relative;
+  min-height: 360px;
+}
+
+.arena-portal{
+  position: absolute;
+  inset: -30px -10px -40px -10px;
+  border-radius: 28px;
+  pointer-events:none;
+  opacity: .85;
+  filter: blur(.2px);
+  z-index: 0;
+}
+
+/* Portal layers using pseudo elements */
+.arena-portal::before,
+.arena-portal::after{
+  content:"";
+  position:absolute;
+  inset: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.22);
+}
+
+.arena-portal::before{
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(var(--accent1-rgb),.00),
+      rgba(var(--accent1-rgb),.35),
+      rgba(var(--accent2-rgb),.35),
+      rgba(var(--accent1-rgb),.00)
+    );
+  filter: blur(0px);
+  animation: portalSpin 6.5s linear infinite;
+  opacity: .85;
+}
+
+.arena-portal::after{
+  inset: 54px;
+  background:
+    radial-gradient(circle at 40% 35%, rgba(255,255,255,.45), transparent 35%),
+    radial-gradient(circle at 70% 60%, rgba(var(--accent2-rgb),.22), transparent 45%),
+    radial-gradient(circle at 30% 70%, rgba(var(--accent1-rgb),.22), transparent 45%);
+  animation: portalPulse 2.4s ease-in-out infinite;
+  opacity: .75;
+}
+
+@keyframes portalSpin{
+  to { transform: rotate(360deg); }
+}
+@keyframes portalPulse{
+  0%{ transform: scale(0.98); opacity:.68; }
+  50%{ transform: scale(1.02); opacity:.88; }
+  100%{ transform: scale(0.98); opacity:.68; }
+}
+
+/* Make sure preview card is above portal */
+.preview-card{
+  position: relative;
+  z-index: 2;
+  transform-style: preserve-3d;
+}
+
+/* A subtle "glass" highlight sweep on hover */
+.preview-card::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(120deg, rgba(255,255,255,.00), rgba(255,255,255,.35), rgba(255,255,255,.00));
+  transform: translateX(-120%);
+  transition: transform .45s ease;
+  pointer-events:none;
+  opacity: .45;
+}
+.preview-card:hover::before{
+  transform: translateX(120%);
+}
+
+/* CTA feels like "Press Start" */
+.primary.big{
+  position: relative;
+  animation: pressPulse 1.6s ease-in-out infinite;
+}
+@keyframes pressPulse{
+  0%{ transform: translateY(0); box-shadow: 0 0 0 0 rgba(var(--accent2-rgb), .16); }
+  50%{ transform: translateY(-1px); box-shadow: 0 0 0 8px rgba(var(--accent2-rgb), .08); }
+  100%{ transform: translateY(0); box-shadow: 0 0 0 0 rgba(var(--accent2-rgb), .16); }
+}
+
+/* Mini button styling */
+.ghost.mini{
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+/* Preview actions row */
+.preview-actions{
+  margin-top: 10px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* Make the home title slightly more "game trailer" */
+.hero-title{
+  text-shadow: 0 18px 38px rgba(20,20,40,.10);
+}
+
+/* ===== ALL-THREE HOME GAME PACK (paste at very bottom) ===== */
+
+/* 1) ROSTER CAROUSEL */
+.roster-wrap{
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(30,30,45,.10);
+  position: relative;
+  z-index: 1;
+}
+
+.roster-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 10px;
+}
+.roster-title{ margin:0; }
+.roster-sub{
+  color: rgba(63,63,85,.80);
+  font-size: 13px;
+}
+
+.roster{
+  overflow:hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.50);
+  box-shadow: var(--shadow);
+}
+
+.roster-track{
+  display:flex;
+  gap: 10px;
+  padding: 12px;
+  width: max-content;
+  animation: rosterScroll 18s linear infinite;
+}
+.roster:hover .roster-track{ animation-play-state: paused; }
+
+@keyframes rosterScroll{
+  0%{ transform: translateX(0); }
+  100%{ transform: translateX(-50%); }
+}
+
+.roster-card{
+  min-width: 230px;
+  border-radius: 16px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.70);
+  padding: 12px;
+}
+.roster-top{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.roster-avatar{
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 1000;
+  border: 1px solid rgba(30,30,45,.12);
+  background: linear-gradient(135deg, rgba(var(--accent1-rgb),.25), rgba(var(--accent2-rgb),.25));
+}
+.roster-name{ font-weight: 1000; }
+.roster-flavor{
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(63,63,85,.82);
+}
+.roster-mini{
+  margin-top: 10px;
+  display:flex;
+  gap: 8px;
+  flex-wrap:wrap;
+}
+.mini-stat{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.78);
+  color: rgba(43,43,58,.92);
+}
+
+/* 2) PORTAL TRANSITION OVERLAY */
+.portal-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(10,12,18,.25);
+  backdrop-filter: blur(10px);
+}
+
+.portal-overlay.hidden{ display:none; }
+
+.portal-ring{
+  position:absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 999px;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(var(--accent1-rgb),.0),
+      rgba(var(--accent1-rgb),.55),
+      rgba(var(--accent2-rgb),.55),
+      rgba(var(--accent1-rgb),.0)
+    );
+  filter: drop-shadow(0 30px 60px rgba(20,20,40,.25));
+  animation: portalSpin2 1.2s linear infinite;
+}
+
+.portal-core{
+  position:absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(var(--accent2-rgb),.30), transparent 60%),
+    radial-gradient(circle at 50% 50%, rgba(var(--accent1-rgb),.30), transparent 60%),
+    rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.18);
+  animation: portalPulse2 .55s ease-in-out infinite;
+}
+
+.portal-text{
+  position:absolute;
+  margin-top: 420px;
+  font-weight: 1000;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 10px 30px rgba(0,0,0,.25);
+  letter-spacing: .04em;
+}
+
+@keyframes portalSpin2{
+  to { transform: rotate(360deg) scale(1.02); }
+}
+@keyframes portalPulse2{
+  0%{ transform: scale(.96); opacity:.8; }
+  50%{ transform: scale(1.04); opacity:1; }
+  100%{ transform: scale(.96); opacity:.8; }
+}
+
+/* 3) MINI TUTORIAL POPOVER */
+.tutorial{
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(10,12,18,.18);
+  backdrop-filter: blur(8px);
+}
+.tutorial.hidden{ display:none; }
+
+.tutorial-card{
+  width: min(560px, calc(100% - 28px));
+  border-radius: 18px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.82);
+  box-shadow: 0 24px 60px rgba(20,20,40,.18);
+  padding: 14px;
+}
+
+.tutorial-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+.tutorial-title{
+  font-weight: 1000;
+  font-size: 16px;
+}
+.tutorial-steps{
+  margin-top: 10px;
+  display:grid;
+  gap: 8px;
+  color: rgba(23,23,34,.92);
+  font-size: 14px;
+}
+.tstep{
+  border: 1px solid rgba(30,30,45,.10);
+  background: rgba(255,255,255,.70);
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.tutorial-actions{
+  margin-top: 12px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* ===== Press Enter hint ===== */
+.enter-hint{
+  margin-top: 10px;
+  color: rgba(63,63,85,.85);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.keycap{
+  display:inline-flex;
+  align-items:center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(30,30,45,.12);
+  background: rgba(255,255,255,.70);
+  font-weight: 1000;
+  margin: 0 4px;
+}
+
+.cta-row{ flex-wrap: wrap; }
+.enter-hint{ margin-top: 12px; }

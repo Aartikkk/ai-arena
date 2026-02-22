@@ -14,6 +14,7 @@
     </div>
     <nav class="top-actions">
       <button id="btnTheme" class="ghost" title="Change theme">Theme</button>
+      <button id="btnSound" class="ghost" title="Toggle sound">Sound: On</button>
       <button id="btnHome" class="ghost">Home</button>
       <button id="btnReset" class="ghost">Reset</button>
     </nav>
@@ -22,18 +23,159 @@
   <main class="container">
 
     <!-- SCREEN: HOME -->
-    <section id="screenHome" class="card">
-      <h2>Welcome</h2>
-      <p class="hint">
-        Pick two AI characters, enter the arena, and battle through themed challenge rounds.
-      </p>
+    <section id="screenHome" class="card home-hero">
+      <div class="hero-grid">
+        <!-- LEFT: Hero copy -->
+        <div class="hero-left">
+          <div class="hero-kicker">Gaming Reality • Offline Web Game</div>
 
-      <div class="cta-row">
-        <button id="btnGoSelect" class="primary">Start</button>
+          <h2 class="hero-title">
+            Pick your AI. <span class="hero-gradient">Win the round.</span>
+          </h2>
+
+          <p class="hero-sub">
+            A fast 2-player arena where AI “avatars” battle through themed prompts.
+            Choose a move, roll for luck, and land hits with style.
+          </p>
+
+          <div class="chip-row">
+            <span class="chip">🎮 2 Players</span>
+            <span class="chip">⚡ 7 Rounds</span>
+            <span class="chip">🧠 Gaming Reality Prompts</span>
+            <span class="chip">📶 Works Offline</span>
+          </div>
+
+          <div class="cta-row">
+            <button id="btnGoSelect" class="primary big">Start Battle</button>
+
+            <button id="btnOpenTut" class="ghost" type="button">
+              ❔ Quick tutorial
+            </button>
+
+            <button class="ghost" type="button"
+              onclick="document.getElementById('howToPlay').scrollIntoView({behavior:'smooth'})">
+              How it works
+            </button>
+          </div>
+
+          <div class="enter-hint">
+            Press <span class="keycap">Enter ↵</span> to start
+          </div>>
+
+          <div class="mini-note">
+            No sign-in, no internet — just pick fighters and play.
+          </div>
+        </div>
+
+        <!-- RIGHT: Live preview card -->
+        <div class="hero-right">
+          <div class="arena-portal" aria-hidden="true"></div>
+
+          <div class="preview-card" id="homePreviewCard">
+            <div class="preview-top">
+              <div class="versus-mini">
+                <div class="mini-fighter" id="homeP1">
+                  <span class="avatar a1">C</span>
+                  <div>
+                    <div class="mf-name">ChatGPT</div>
+                    <div class="mf-sub">All-rounder</div>
+                  </div>
+                </div>
+
+                <div class="vs-badge">VS</div>
+
+                <div class="mini-fighter" id="homeP2">
+                  <span class="avatar a2">A</span>
+                  <div>
+                    <div class="mf-name">Claude</div>
+                    <div class="mf-sub">Writer</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="type-pill" id="homeType">Logic</div>
+            </div>
+
+            <div class="preview-prompt" id="homePrompt">
+              “A game is popular, so it must be good. What’s wrong with that reasoning?”
+            </div>
+
+            <div class="preview-rules">
+              <div class="rule">
+                <span class="rule-k">🧠 Score</span>
+                <span class="rule-v">Skill + Move + 🎲 Luck</span>
+              </div>
+              <div class="rule">
+                <span class="rule-k">💥 Damage</span>
+                <span class="rule-v">Bigger win → bigger hit</span>
+              </div>
+              <div class="rule">
+                <span class="rule-k">🛡️ Shield</span>
+                <span class="rule-v">Blocks damage</span>
+              </div>
+            </div>
+            <div class="preview-actions">
+              <button id="btnShufflePreview" class="ghost mini">🎲 Shuffle Matchup</button>
+            </div>
+            <div class="preview-footer">
+              <span class="spark">✨</span> Built for gameplay + discussion (not a real model benchmark).
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="note">
-        <strong>Class note:</strong> Stats/powers are designed for gameplay and discussion — not a benchmark of real models.
+      <div class="roster-wrap">
+        <div class="roster-head">
+          <h3 class="roster-title">Meet the Fighters</h3>
+          <div class="roster-sub">Swipe/scroll — pick a vibe, then enter the arena.</div>
+        </div>
+
+        <div class="roster" id="roster">
+          <div class="roster-track" id="rosterTrack"></div>
+        </div>
+      </div>
+
+      <!-- How to play -->
+      <div class="howto" id="howToPlay">
+        <h3 class="howto-title">How it works</h3>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Pick fighters</div>
+              <div class="step-text">Choose two AI avatars + team names.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Choose moves</div>
+              <div class="step-text">Moves give bonuses or shields for the round.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Roll luck</div>
+              <div class="step-text">A dice roll keeps rounds unpredictable + fun.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Win the round</div>
+              <div class="step-text">Winner deals damage (shield reduces it).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:14px;">
+          <strong>Class note:</strong> Stats/powers are designed for gameplay and discussion — not a benchmark of real models.
+        </div>
       </div>
     </section>
 
@@ -127,9 +269,30 @@
           <div class="pill" id="roundCounter">Round 0/7</div>
           <div class="badge" id="challengeBadge">—</div>
         </div>
-
+         
         <h3 style="margin:10px 0 6px 0">Challenge</h3>
         <p class="challenge-text" id="challengeText">Click Next Round to start.</p>
+         
+        <div class="mini-row">
+          <label class="toggle">
+            <input type="checkbox" id="toggleAutoPick" checked />
+            <span>Auto-pick recommended moves</span>
+          </label>
+          <div class="mini-hint">Turn off if you want players to choose moves manually.</div>
+        </div>
+
+        <div id="breakdown" class="breakdown hidden"></div>
+
+        <div class="dice-tray hidden" id="diceTray">
+          <div class="die-card">
+            <div class="die-label" id="p1DieLabel">P1 Roll</div>
+            <div class="die" id="p1Die">-</div>
+          </div>
+          <div class="die-card">
+            <div class="die-label" id="p2DieLabel">P2 Roll</div>
+            <div class="die" id="p2Die">-</div>
+          </div>
+        </div>
 
         <!-- Moves -->
         <div class="move-grid">
@@ -162,6 +325,33 @@
 
   </main>
 
+  <div id="portalOverlay" class="portal-overlay hidden" aria-hidden="true">
+    <div class="portal-ring"></div>
+    <div class="portal-core"></div>
+    <div class="portal-text">Entering Arena…</div>
+  </div>
+
+  <div id="tutorial" class="tutorial hidden" role="dialog" aria-modal="true">
+    <div class="tutorial-card">
+      <div class="tutorial-top">
+        <div class="tutorial-title">How to win (10 seconds)</div>
+        <button id="btnCloseTut" class="ghost mini" type="button">✕</button>
+      </div>
+
+      <div class="tutorial-steps">
+        <div class="tstep"><b>1)</b> Each round has a challenge type (Coding, Writing, etc.)</div>
+        <div class="tstep"><b>2)</b> Pick a move → it gives a <b>bonus</b> or <b>shield</b></div>
+        <div class="tstep"><b>3)</b> You roll 🎲 <b>Luck (1–6)</b> so it’s unpredictable</div>
+        <div class="tstep"><b>4)</b> Higher total wins → deals damage (shield blocks it)</div>
+      </div>
+
+      <div class="tutorial-actions">
+        <button id="btnTutStart" class="primary big" type="button">Got it — Start</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
+
 </body>
 </html>
