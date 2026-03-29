@@ -1,0 +1,478 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Arena: Prompt-Powered Boxing Ring</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>AI Arena <span class="title-accent">: Prompt-Powered Boxing Ring</span></h1>
+      <p class="subtitle">Pick fighters. Choose moves. Let the prompts decide.</p>
+    </div>
+    <nav class="top-actions">
+      <button id="btnTheme" class="ghost" title="Change theme">Theme</button>
+      <button id="btnSound" class="ghost" title="Toggle sound">Sound: On</button>
+      <button id="btnHome" class="ghost">Home</button>
+      <button id="btnReset" class="ghost">Reset</button>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- SCREEN: HOME -->
+        <section id="screenHome" class="card home-hero">
+
+      <!-- ===== HERO: clean centred lobby ===== -->
+      <div class="hero-center">
+        <div class="hero-kicker">HONS 3301 &middot; Gaming Reality</div>
+
+        <h2 class="hero-title">
+          AI Arena<span class="hero-colon">:</span><br>
+          <span class="hero-gradient">Prompt-Powered Boxing Ring</span>
+        </h2>
+
+        <p class="hero-sub">
+          Two AI fighters. Seven rounds. Pick moves, roll for luck, and knock your opponent out.
+        </p>
+
+        <div class="cta-row cta-center">
+          <button id="btnGoSelect" class="primary big">&#9876;&#65039; Start Battle</button>
+          <button id="btnOpenTut" class="ghost" type="button">&#10068; How to play</button>
+        </div>
+
+        <div class="enter-hint" style="text-align:center">
+          Press <span class="keycap">Enter &#8629;</span> to start
+        </div>
+      </div>
+
+      <!-- ===== MATCHUP PREVIEW ===== -->
+      <div class="hero-preview-wrap">
+        <div class="preview-card" id="homePreviewCard">
+          <div class="preview-top">
+            <div class="versus-mini">
+              <div class="mini-fighter" id="homeP1">
+                <span class="avatar a1">C</span>
+                <div>
+                  <div class="mf-name">ChatGPT</div>
+                  <div class="mf-sub">All-rounder</div>
+                </div>
+              </div>
+
+              <div class="vs-badge">VS</div>
+
+              <div class="mini-fighter" id="homeP2">
+                <span class="avatar a2">A</span>
+                <div>
+                  <div class="mf-name">Claude</div>
+                  <div class="mf-sub">Writer</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="type-pill" id="homeType">Logic</div>
+          </div>
+
+          <div class="preview-prompt" id="homePrompt">
+            "A game is popular, so it must be good. What's wrong with that reasoning?"
+          </div>
+
+          <div class="preview-actions">
+            <button id="btnShufflePreview" class="ghost mini">&#127922; Shuffle Matchup</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== QUICK INFO CHIPS ===== -->
+      <div class="chip-row chip-center">
+        <span class="chip">&#127918; 2 Players</span>
+        <span class="chip">&#9889; 7 Rounds</span>
+        <span class="chip">&#129504; Prompt Challenges</span>
+        <span class="chip">&#128246; Works Offline</span>
+      </div>
+
+      <!-- ===== FIGHTER ROSTER ===== -->
+      <div class="roster-wrap">
+        <div class="roster-head">
+          <h3 class="roster-title">Meet the Fighters</h3>
+        </div>
+        <div class="roster" id="roster">
+          <div class="roster-track" id="rosterTrack"></div>
+        </div>
+      </div>
+
+      <!-- ===== HOW TO PLAY (collapsed accordion) ===== -->
+      <details class="howto-accordion" id="howToPlay">
+        <summary class="howto-toggle">&#128214; How it works &mdash; quick rules</summary>
+        <div class="howto-body">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <div class="step-title">Pick fighters</div>
+                <div class="step-text">Choose two AI avatars + team names.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <div class="step-title">Choose moves</div>
+                <div class="step-text">Each move gives stat bonuses or shields &mdash; pick the right one for the challenge type.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <div class="step-title">Roll luck</div>
+                <div class="step-text">A dice roll (1&ndash;6) adds randomness so every round is unpredictable.</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <div class="step-title">Win the round</div>
+                <div class="step-text">Higher total wins &rarr; deals damage. Shield blocks it. First to KO wins!</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="howto-formula">
+            <strong>Score Formula:</strong> Base Stat + Move Bonus + &#127922; Luck (1&ndash;6)
+          </div>
+
+          <div class="howto-extras">
+            <div class="howto-chip">&#128165; <b>Crits</b> &mdash; 15% chance for double damage</div>
+            <div class="howto-chip">&#128293; <b>Combos</b> &mdash; Win streaks add bonus damage</div>
+            <div class="howto-chip">&#9889; <b>Super Meter</b> &mdash; Builds each round, unlocks a devastating super move at 100%</div>
+            <div class="howto-chip">&#128737;&#65039; <b>Shield</b> &mdash; Absorbs damage; some supers pierce through it</div>
+          </div>
+        </div>
+      </details>
+
+      <div class="home-footer-note">
+        <span class="spark">&#10024;</span> Built for gameplay + class discussion &mdash; AI characters are fictional abstractions, not benchmarks.
+      </div>
+    </section>
+
+    <!-- SCREEN: SELECT -->
+    <section id="screenSelect" class="card hidden">
+      <h2>Character Select</h2>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3>Player 1</h3>
+          <label>Name</label>
+          <input id="p1Name" placeholder="Team 1" value="Team 1" />
+
+          <label>Choose AI</label>
+          <select id="p1Select"></select>
+
+          <div id="p1Preview" class="preview"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Player 2</h3>
+          <label>Name</label>
+          <input id="p2Name" placeholder="Team 2" value="Team 2" />
+
+          <label>Choose AI</label>
+          <select id="p2Select"></select>
+
+          <div id="p2Preview" class="preview"></div>
+        </div>
+      </div>
+
+      <div class="cta-row space-between">
+        <button id="btnBackHome" class="ghost">Back</button>
+        <button id="btnStartGame" class="primary">Enter Arena</button>
+      </div>
+    </section>
+
+    <!-- SCREEN: ARENA -->
+    <section id="screenArena" class="card hidden">
+      <div class="arena-header">
+        <div>
+          <h2>Arena</h2>
+          <p class="hint">Each round: pick a move → roll power → winner deals damage.</p>
+        </div>
+        <div class="arena-actions">
+          <div class="mode-toggle" role="group" aria-label="Arena mode">
+            <button id="btnModeClassic" class="ghost mini is-active" type="button">Classic</button>
+            <button id="btnModeRing" class="ghost mini" type="button">Ring</button>
+          </div>
+          <button id="btnBackSelect" class="ghost">Change Characters</button>
+        </div>
+      </div>
+
+    <!-- RING MODE STAGE -->
+    <section id="ringStage" class="ring-stage hidden" aria-label="Boxing ring">
+      <div class="ring-top">
+        <div class="ring-leftHud">
+          <div class="ring-hudName" id="ringP1HudName">Team 1</div>
+          <div class="ring-hpRow">
+            <div class="ring-hpBar">
+              <div class="ring-hpFill" id="ringP1HPFill"></div>
+            </div>
+            <div class="ring-hpNum" id="ringP1HPNum">12/12</div>
+          </div>
+          <div class="ring-energyRow">
+            <div class="ring-energyBar"><div class="ring-energyFill" id="ringP1EnergyFill"></div></div>
+            <span class="ring-energyLabel" id="ringP1EnergyLabel">⚡ 0%</span>
+          </div>
+        </div>
+
+        <div class="ring-midHud">
+          <div class="ring-round" id="ringRound">ROUND 1</div>
+          <div class="ring-type" id="ringType">WAITING…</div>
+        </div>
+
+        <div class="ring-rightHud">
+          <div class="ring-hudName" id="ringP2HudName">Team 2</div>
+          <div class="ring-hpRow">
+            <div class="ring-hpBar">
+              <div class="ring-hpFill" id="ringP2HPFill"></div>
+            </div>
+            <div class="ring-hpNum" id="ringP2HPNum">12/12</div>
+          </div>
+          <div class="ring-energyRow">
+            <div class="ring-energyBar"><div class="ring-energyFill" id="ringP2EnergyFill"></div></div>
+            <span class="ring-energyLabel" id="ringP2EnergyLabel">⚡ 0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ring" id="ringCanvas">
+        <div class="ring-bg"></div>
+        <div class="ring-light"></div>
+        <div class="ring-mat"></div>
+
+        <div class="ring-post post-tl"></div>
+        <div class="ring-post post-tr"></div>
+        <div class="ring-post post-bl"></div>
+        <div class="ring-post post-br"></div>
+        <div class="ring-ropes"></div>
+
+        <!-- P1 Fighter Character -->
+        <div class="fighter-sprite left" id="ringP1" data-ai="chatgpt">
+          <div class="char-container">
+            <div class="char-aura"></div>
+            <div class="char-head"><div class="char-visor"></div></div>
+            <div class="char-body"><span class="char-icon" id="ringP1Icon">⚡</span></div>
+            <div class="char-arm"></div>
+            <div class="char-fist" id="ringP1Fist"></div>
+            <div class="char-legs"></div>
+          </div>
+          <div class="char-shadow"></div>
+          <div class="sprite-name" id="ringP1Name">Team 1</div>
+        </div>
+
+        <!-- P2 Fighter Character -->
+        <div class="fighter-sprite right" id="ringP2" data-ai="claude">
+          <div class="char-container">
+            <div class="char-aura"></div>
+            <div class="char-head"><div class="char-visor"></div></div>
+            <div class="char-body"><span class="char-icon" id="ringP2Icon">🔥</span></div>
+            <div class="char-arm"></div>
+            <div class="char-fist" id="ringP2Fist"></div>
+            <div class="char-legs"></div>
+          </div>
+          <div class="char-shadow"></div>
+          <div class="sprite-name" id="ringP2Name">Team 2</div>
+        </div>
+
+        <!-- FX layers -->
+        <div class="energy-projectile" id="energyProjectile"></div>
+        <div class="power-burst" id="powerBurst"></div>
+        <div class="hit-particles" id="hitParticles">
+          <div class="spark-dot"></div><div class="spark-dot"></div>
+          <div class="spark-dot"></div><div class="spark-dot"></div>
+          <div class="spark-dot"></div><div class="spark-dot"></div>
+        </div>
+        <div class="impact-text" id="impactText">HIT!</div>
+      </div>
+
+      <!-- INLINE RING CONTROLS (no scroll needed) -->
+      <div class="ring-controls">
+        <div class="ring-prompt-bar">
+          <span class="ring-challenge-badge" id="ringChallengeBadge">—</span>
+          <span class="ring-challenge-text" id="ringChallengeText">Click Next Round to start.</span>
+        </div>
+        <div class="ring-move-row">
+          <div class="ring-move-panel">
+            <div class="ring-move-label" id="ringP1MoveLabel">P1 Move</div>
+            <select id="ringP1Move" class="ring-select"></select>
+          </div>
+          <div class="ring-action-btns">
+            <button id="ringNext" class="ring-btn primary" disabled>Next Round</button>
+            <button id="ringResolve" class="ring-btn accent" disabled>⚔️ Fight!</button>
+          </div>
+          <div class="ring-move-panel">
+            <div class="ring-move-label" id="ringP2MoveLabel">P2 Move</div>
+            <select id="ringP2Move" class="ring-select"></select>
+          </div>
+        </div>
+        <div class="ring-result-bar" id="ringResultBar"></div>
+        <div class="ring-log" id="ringLog"></div>
+      </div>
+    </section>
+
+      <div class="arena-grid">
+        <!-- Player 1 Card -->
+        <article class="fighter" id="p1Fighter">
+          <div class="fighter-top">
+            <div>
+              <div class="fighter-name" id="p1CardName">Team 1</div>
+              <div class="fighter-ai" id="p1CardAI">ChatGPT</div>
+            </div>
+            <div class="pill">HP <span id="p1HPNum">12</span>/12</div>
+          </div>
+
+          <div class="hpbar">
+            <div class="hpfill" id="p1HPFill" style="width:100%"></div>
+          </div>
+
+          <div class="stats" id="p1Stats"></div>
+        </article>
+
+        <div class="vs-big">VS</div>
+
+        <!-- Player 2 Card -->
+        <article class="fighter" id="p2Fighter">
+          <div class="fighter-top">
+            <div>
+              <div class="fighter-name" id="p2CardName">Team 2</div>
+              <div class="fighter-ai" id="p2CardAI">Claude</div>
+            </div>
+            <div class="pill">HP <span id="p2HPNum">12</span>/12</div>
+          </div>
+
+          <div class="hpbar">
+            <div class="hpfill" id="p2HPFill" style="width:100%"></div>
+          </div>
+
+          <div class="stats" id="p2Stats"></div>
+        </article>
+      </div>
+
+      <!-- ROUND / CONSOLE -->
+      <section class="card inner">
+        <div class="roundbar">
+          <div class="pill" id="roundCounter">Round 0/7</div>
+          <div class="badge" id="challengeBadge">—</div>
+        </div>
+         
+        <h3 style="margin:10px 0 6px 0">Challenge</h3>
+        <p class="challenge-text" id="challengeText">Click Next Round to start.</p>
+         
+        <div class="mini-row">
+          <label class="toggle">
+            <input type="checkbox" id="toggleAutoPick" checked />
+            <span>Auto-pick recommended moves</span>
+          </label>
+          <div class="mini-hint">Turn off if you want players to choose moves manually.</div>
+        </div>
+
+        <div id="breakdown" class="breakdown hidden"></div>
+
+        <div class="dice-tray hidden" id="diceTray">
+          <div class="die-card">
+            <div class="die-label" id="p1DieLabel">P1 Roll</div>
+            <div class="die" id="p1Die">-</div>
+          </div>
+          <div class="die-card">
+            <div class="die-label" id="p2DieLabel">P2 Roll</div>
+            <div class="die" id="p2Die">-</div>
+          </div>
+        </div>
+
+        <!-- Moves -->
+        <div class="move-grid">
+          <div class="move-panel">
+            <div class="move-title">Player 1 Move</div>
+            <select id="p1MoveSelect"></select>
+            <div class="move-desc" id="p1MoveDesc"></div>
+            <div class="move-reco" id="p1MoveReco"></div>
+          </div>
+
+          <div class="move-panel">
+            <div class="move-title">Player 2 Move</div>
+            <select id="p2MoveSelect"></select>
+            <div class="move-desc" id="p2MoveDesc"></div>
+            <div class="move-reco" id="p2MoveReco"></div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+          <button id="btnResolveRound" class="primary" disabled>Resolve Round</button>
+          <button id="btnNextRound" class="ghost" disabled>Next Round</button>
+        </div>
+
+        <div id="roundResult" class="result hidden"></div>
+        <h3 style="margin:14px 0 8px 0">Combat Log</h3>
+        <div class="console" id="console"></div>
+      </section>
+    </section>
+
+  </main>
+
+  <div id="portalOverlay" class="portal-overlay hidden" aria-hidden="true">
+    <div class="portal-ring"></div>
+    <div class="portal-core"></div>
+    <div class="portal-text">Entering Arena…</div>
+  </div>
+
+  <div id="tutorial" class="tutorial hidden" role="dialog" aria-modal="true">
+    <div class="tutorial-card">
+      <div class="tutorial-top">
+        <div class="tutorial-title">How to Win — Full Guide</div>
+        <button id="btnCloseTut" class="ghost mini" type="button">✕</button>
+      </div>
+
+      <div class="tutorial-steps">
+        <div class="tstep">
+          <b>🎯 Scoring</b><br>
+          Each round: <code>Base Stat + Move Bonus + 🎲 Luck (1–6) = Total</code>.<br>
+          The higher total wins the round and deals damage.
+        </div>
+
+        <div class="tstep">
+          <b>⚔️ Move Types</b><br>
+          <b>Power attacks</b> give big bonus on their matching challenge type (e.g. Neural Strike → +3 on Coding).<br>
+          <b>Shield moves</b> absorb incoming damage instead of boosting your score.<br>
+          <b>Super moves</b> cost 100% energy but are devastatingly powerful.
+        </div>
+
+        <div class="tstep">
+          <b>🧠 When to Use Which Move</b><br>
+          • If the challenge matches your fighter's strength → use the <b>power attack</b> for max bonus.<br>
+          • If it's a bad matchup or your opponent is strong → use a <b>shield move</b> to survive.<br>
+          • If your energy meter is full → unleash the <b>super move</b> for a game-changer!
+        </div>
+
+        <div class="tstep">
+          <b>💥 Advanced Mechanics</b><br>
+          <b>Critical Hits</b> — 15% chance to deal double damage.<br>
+          <b>Combo Streaks</b> — Win multiple rounds in a row for +1 bonus damage per streak.<br>
+          <b>Energy Meter</b> — Builds +20 (winner), +30 (loser), +10 (tie) each round.<br>
+          <b>Piercing</b> — Some supers ignore the opponent's shield entirely.
+        </div>
+
+        <div class="tstep">
+          <b>🏆 How to Win the Match</b><br>
+          First player to reduce the opponent's HP to 0 wins. If all 7 rounds pass, the player with more HP remaining wins.
+        </div>
+      </div>
+
+      <div class="tutorial-actions">
+        <button id="btnTutStart" class="primary big" type="button">Got it — Let's Fight!</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
