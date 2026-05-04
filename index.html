@@ -246,7 +246,23 @@
       <div class="ring" id="ringCanvas">
         <div class="ring-bg"></div>
         <div class="ring-light"></div>
+        <div class="arena-backwall">
+          <div class="holo-board board-left">
+            <span class="board-label">ARENA EVENT</span>
+            <strong id="ringEventName">Standby</strong>
+          </div>
+          <div class="holo-board board-right">
+            <span class="board-label">HYPE LEVEL</span>
+            <strong id="ringHypeLevel">0%</strong>
+          </div>
+        </div>
+        <div class="crowd-tier tier-one"></div>
+        <div class="crowd-tier tier-two"></div>
+        <div class="camera-drone drone-left"></div>
+        <div class="camera-drone drone-right"></div>
         <div class="ring-mat"></div>
+        <div class="mat-grid"></div>
+        <div class="floor-lights"></div>
 
         <div class="ring-post post-tl"></div>
         <div class="ring-post post-tr"></div>
@@ -298,6 +314,10 @@
         <div class="ring-prompt-bar">
           <span class="ring-challenge-badge" id="ringChallengeBadge">—</span>
           <span class="ring-challenge-text" id="ringChallengeText">Click Next Round to start.</span>
+        </div>
+        <div class="ring-event-bar" id="ringEventBar">
+          <span class="event-kicker">Arena Event</span>
+          <span id="ringEventText">A new event appears each round.</span>
         </div>
         <div class="ring-move-row">
           <div class="ring-move-panel">

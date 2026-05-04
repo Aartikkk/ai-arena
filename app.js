@@ -49,6 +49,40 @@ const TypeToStat = {
   Persuasion: "writing"
 };
 
+const ArenaEvents = [
+  {
+    id: "overclock",
+    name: "Overclock Floor",
+    desc: "+1 total for fighters using speed or code pressure.",
+    className: "event-overclock",
+    bonus: (player, opponent, type, power) => (
+      power.statKey === "code" || (player.ai.stats.speed >= 8) ? 1 : 0
+    )
+  },
+  {
+    id: "spotlight",
+    name: "Spotlight Surge",
+    desc: "+1 comeback bonus for the fighter with lower HP.",
+    className: "event-spotlight",
+    bonus: (player, opponent) => (player.hp < opponent.hp ? 1 : 0)
+  },
+  {
+    id: "firewall",
+    name: "Firewall Zone",
+    desc: "+1 shield for defensive moves.",
+    className: "event-firewall",
+    bonus: () => 0,
+    shield: (power) => (power.shield > 0 ? 1 : 0)
+  },
+  {
+    id: "hype",
+    name: "Crowd Hype",
+    desc: "+1 total when your super meter is at least 60%.",
+    className: "event-hype",
+    bonus: (player) => ((player.energy || 0) >= 60 ? 1 : 0)
+  }
+];
+
 const MovesByAI = {
   chatgpt: [
     {
@@ -271,6 +305,25 @@ function syncRingUI(){
   if (rcBadge) rcBadge.textContent = match.challenge ? match.challenge.type : "—";
   if (rcText) rcText.textContent = match.challenge ? match.challenge.prompt : "Click Next Round to start.";
 
+  const event = match.arenaEvent || null;
+  const eventName = document.getElementById("ringEventName");
+  const eventText = document.getElementById("ringEventText");
+  const eventBar = document.getElementById("ringEventBar");
+  const hypeLevel = document.getElementById("ringHypeLevel");
+  const ringCanvas = document.getElementById("ringCanvas");
+  if (eventName) eventName.textContent = event ? event.name : "Standby";
+  if (eventText) eventText.textContent = event ? event.desc : "A new event appears each round.";
+  if (eventBar) eventBar.classList.toggle("active", !!event);
+  if (hypeLevel) {
+    const hpLost = (MAX_HP - p1hp) + (MAX_HP - p2hp);
+    const hype = Math.min(100, Math.round(((match.round || 0) / MAX_ROUNDS) * 45 + hpLost * 4));
+    hypeLevel.textContent = `${hype}%`;
+  }
+  if (ringCanvas) {
+    ringCanvas.classList.remove(...ArenaEvents.map(e => e.className));
+    if (event) ringCanvas.classList.add(event.className);
+  }
+
   // Sync ring move selects with main selects
   syncRingMoves();
 
@@ -368,8 +421,18 @@ function triggerBlockEffect(fighterEl){
   setTimeout(()=> fighterEl.classList.remove("block-effect"), 550);
 }
 
+function triggerRingCamera(state){
+  const ringEl = document.getElementById("ringCanvas");
+  if (!ringEl) return;
+  ringEl.classList.remove("camera-fight", "camera-super", "camera-reset");
+  void ringEl.offsetWidth;
+  ringEl.classList.add(state);
+  setTimeout(() => ringEl.classList.remove(state), state === "camera-super" ? 900 : 650);
+}
+
 function rollD6(){ return 1 + Math.floor(Math.random() * 6); }
 function pickChallenge(){ return Challenges[Math.floor(Math.random() * Challenges.length)]; }
+function pickArenaEvent(){ return ArenaEvents[Math.floor(Math.random() * ArenaEvents.length)]; }
 const el = (id) => document.getElementById(id);
 
 // Screens
@@ -557,12 +620,19 @@ function floatText(fighterEl, text){
 function renderBreakdown({ type, p1, p2, winnerName, dmgLine }){
   if (!breakdown || !match) return;
   breakdown.classList.remove("hidden");
+  const eventLine = match.arenaEvent
+    ? `<div class="row">
+        <div class="k">Arena Event</div>
+        <div class="v">${match.arenaEvent.name}: ${match.arenaEvent.desc}</div>
+      </div>`
+    : "";
 
   breakdown.innerHTML = `
     <div class="row">
       <div class="k">Challenge</div>
       <div class="v">${type}</div>
     </div>
+    ${eventLine}
 
     <div class="row">
       <div class="k">${match.p1.name}</div>
@@ -584,6 +654,14 @@ function renderBreakdown({ type, p1, p2, winnerName, dmgLine }){
       <div class="v">${dmgLine}</div>
     </div>
   `;
+  if ((p1.eventBonus || p2.eventBonus) && match.arenaEvent) {
+    breakdown.insertAdjacentHTML("beforeend", `
+      <div class="row">
+        <div class="k">Event Bonus</div>
+        <div class="v">${match.p1.name} +${p1.eventBonus || 0} | ${match.p2.name} +${p2.eventBonus || 0}</div>
+      </div>
+    `);
+  }
 }
 
 // Moves UI
@@ -611,8 +689,8 @@ function renderMovesUI(){
   renderMoveSelect(p2MoveSelect, p2MoveDesc, match.p2);
 }
 
-// Simplified Power calc (no speed bonus)
-function computePower(player, type, moveId){
+// Power calc with move effects, luck, and active arena event.
+function computePower(player, type, moveId, opponent){
   const ai = player.ai;
   const statKey = TypeToStat[type];
   const base = ai.stats[statKey];
@@ -621,19 +699,24 @@ function computePower(player, type, moveId){
   const eff = move ? move.effect(type) : {};
 
   const bonus = eff[statKey] || 0;
-  const shield = eff.shield || 0;
+  let shield = eff.shield || 0;
   const piercing = !!eff.piercing;
   const reflect = eff.reflect || 0;
   const isSuper = !!(move && move.isSuper);
 
   const luck = rollD6();
-  const total = base + bonus + luck;
+  const event = match?.arenaEvent || null;
+  const eventSeed = { statKey, base, bonus, luck, shield, piercing, reflect, isSuper };
+  const eventBonus = event ? (event.bonus?.(player, opponent || player, type, eventSeed) || 0) : 0;
+  shield += event ? (event.shield?.(eventSeed, player, opponent || player, type) || 0) : 0;
+  const total = base + bonus + luck + eventBonus;
 
   return {
-    total, base, bonus, luck, shield, piercing, reflect, isSuper,
+    total, base, bonus, luck, eventBonus, shield, piercing, reflect, isSuper,
     statKey,
     moveName: move ? move.name : "—",
-    flavor: move ? move.flavor : ""
+    flavor: move ? move.flavor : "",
+    eventName: event ? event.name : ""
   };
 }
 
@@ -1091,6 +1174,7 @@ el("btnStartGame").addEventListener("click", () => {
     p1: { name: name1, ai: a1, hp: MAX_HP, moveId: (MovesByAI[a1.id] || [])[0]?.id || null, energy: 0, combo: 0 },
     p2: { name: name2, ai: a2, hp: MAX_HP, moveId: (MovesByAI[a2.id] || [])[0]?.id || null, energy: 0, combo: 0 },
     challenge: null,
+    arenaEvent: null,
     lastWinner: null
   };
 
@@ -1165,6 +1249,7 @@ btnNextRound.addEventListener("click", () => {
 
   match.round += 1;
   match.challenge = pickChallenge();
+  match.arenaEvent = pickArenaEvent();
 
   const t = match.challenge.type;
   if (match.autoPick){
@@ -1174,8 +1259,10 @@ btnNextRound.addEventListener("click", () => {
   renderMovesUI();
 
   logInfo(`🎬 Round ${match.round} begins: ${match.challenge.type}`);
+  if (match.arenaEvent) logInfo(`Arena Event: ${match.arenaEvent.name} - ${match.arenaEvent.desc}`);
   SFX.roundStart();
   updateRoundUI();
+  triggerRingCamera("camera-reset");
 
   btnResolveRound.disabled = false;
   btnNextRound.disabled = true;
@@ -1205,8 +1292,8 @@ btnResolveRound.addEventListener("click", () => {
     match.p2.moveId = p2MoveSelect.value;
   }
 
-  const p1Pow = computePower(match.p1, type, match.p1.moveId);
-  const p2Pow = computePower(match.p2, type, match.p2.moveId);
+  const p1Pow = computePower(match.p1, type, match.p1.moveId, match.p2);
+  const p2Pow = computePower(match.p2, type, match.p2.moveId, match.p1);
 
   // Dice / Luck
   if (p1DieLabel) p1DieLabel.textContent = `${match.p1.name} Luck`;
@@ -1221,7 +1308,10 @@ btnResolveRound.addEventListener("click", () => {
   if (p1Pow.total === p2Pow.total){
     if (roundResult) roundResult.textContent = `🤝 Round Result: Tie`;
     if (ringResultBar) ringResultBar.textContent = "🤝 TIE — No damage!";
-    if (mode === "ring") showImpact("TIE!");
+    if (mode === "ring") {
+      showImpact("TIE!");
+      triggerRingCamera("camera-fight");
+    }
 
     renderBreakdown({ type, p1: p1Pow, p2: p2Pow, winnerName: "🤝 Tie", dmgLine: "No damage" });
 
@@ -1302,11 +1392,13 @@ btnResolveRound.addEventListener("click", () => {
       // Super move flash
       if (winnerPow.isSuper) {
         attacker.classList.add("super-active");
+        triggerRingCamera("camera-super");
         SFX.superActivate();
         setTimeout(() => attacker.classList.remove("super-active"), 600);
       }
 
       // 1) Attacker lunges
+      if (!winnerPow.isSuper) triggerRingCamera("camera-fight");
       attacker.classList.add(winnerKey === "p1" ? "punch-left" : "punch-right");
 
       // 2) Impact at ~200ms
@@ -1448,6 +1540,7 @@ btnResolveRound.addEventListener("click", () => {
   btnResolveRound.disabled = true;
   btnNextRound.disabled = false;
   match.challenge = null;
+  match.arenaEvent = null;
   updateRoundUI();
 
   // Auto-scroll ring into view
